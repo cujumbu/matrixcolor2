@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useColorContext } from '../context/ColorContext';
-import { Upload, RefreshCw, Image as ImageIcon } from 'lucide-react';
+import { Upload, RefreshCw, Image as ImageIcon, Download } from 'lucide-react';
 
 const DEFAULT_IMAGES = [
   'https://images.unsplash.com/photo-1507146426996-ef05306b995a?auto=format&fit=crop&w=800&q=80',
@@ -68,6 +68,19 @@ export function ImagePreview() {
     setImageUrl(DEFAULT_IMAGES[nextIndex]);
   };
 
+  const downloadImage = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    // Create a temporary link element
+    const link = document.createElement('a');
+    link.download = 'transformed-image.png';
+    link.href = canvas.toDataURL('image/png');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
       <div className="flex justify-between items-center mb-4">
@@ -85,6 +98,14 @@ export function ImagePreview() {
             Upload
             <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
           </label>
+          <button
+            onClick={downloadImage}
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            disabled={loading}
+          >
+            <Download className="w-4 h-4" />
+            Download
+          </button>
         </div>
       </div>
       <div className="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
